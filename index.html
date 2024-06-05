@@ -1,0 +1,83 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Time</title>
+    <link rel="stylesheet" href="https://unpkg.com/micromodal/dist/micromodal.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #currentTime {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div id="currentTime"></div>
+    <button data-micromodal-trigger="modal-1">Select Timezone</button>
+
+    <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+                <header class="modal__header">
+                    <h2 class="modal__title" id="modal-1-title">Select Timezone</h2>
+                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+                </header>
+                <main class="modal__content" id="modal-1-content">
+                    <select id="timezoneSelect">
+                        <option value="UTC">UTC</option>
+                        <option value="America/New_York">New York (UTC-5)</option>
+                        <option value="Europe/London">London (UTC+0)</option>
+                        <option value="Africa/Kampala">Uganda (UTC+3)</option>
+                        <option value="Asia/Tokyo">Tokyo (UTC+9)</option>
+                        <option value="Africa/Nairobi">Nairobi (UTC+3)</option>
+                        <!-- Add more timezones as needed -->
+                    </select>
+                </main>
+                <footer class="modal__footer">
+                    <button class="modal__btn" id="confirmBtn" data-micromodal-close>Confirm</button>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/dayjs/dayjs.min.js"></script>
+    <script src="https://unpkg.com/dayjs/plugin/utc.js"></script>
+    <script src="https://unpkg.com/dayjs/plugin/timezone.js"></script>
+    <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
+    <script>
+        dayjs.extend(dayjs_plugin_utc);
+        dayjs.extend(dayjs_plugin_timezone);
+
+        let currentTimezone = dayjs.tz.guess();
+
+        function updateTime() {
+            const currentTime = dayjs().tz(currentTimezone).format('YYYY-MM-DD HH:mm:ss');
+            document.getElementById('currentTime').textContent = currentTime;
+        }
+
+        document.getElementById('confirmBtn').addEventListener('click', () => {
+            const selectedTimezone = document.getElementById('timezoneSelect').value;
+            currentTimezone = selectedTimezone;
+            updateTime();
+        });
+
+        setInterval(updateTime, 1000);
+        updateTime();
+        MicroModal.init();
+    </script>
+</body>
+</html>
